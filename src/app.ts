@@ -5,8 +5,11 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello typescript Developer1 !');
+  res.send('Hello typescript mongoose server !');
 });
-app.post('/api/users',userRoute);
-app.get('/GET/api/users',userRoute);
+app.post('/POST/api/users', userRoute);
+app.get('/GET/api/users', userRoute);
+app.get('/GET/api/users/:userId', userRoute);
+
+
 export default app;

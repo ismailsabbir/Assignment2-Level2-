@@ -4,31 +4,61 @@ const createuser = async (req: Request, res: Response) => {
   try {
     const user = req.body.user;
     const result = await userservice.createUserDB(user);
-    console.log(result);
+
     res.status(200).json({
       sucess: true,
-      message: 'Susessfull created',
+      message: 'User created successfully',
+      data: result,
+    });
+  } catch (error) {
+    res.status(404).json(
+        {
+            "success": false,
+            "message": "User creation failed",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+    )
+  }
+};
+const getalluser = async (req: Request, res: Response) => {
+  try {
+    const result = await userservice.getUserFromDb();
+    res.status(200).json({
+      sucess: true,
+      message: 'Student get sucessfully',
       data: result,
     });
   } catch (error) {
     console.log(error);
   }
-
 };
-const getalluser=async(req:Request,res:Response)=>{
-    try{
-const result=await userservice.getUserFromDb();
-res.status(200).json({
-    sucess:true,
-    message:'Student get sucessfully',
-    data:result,
-})
+const getaUser = async (req: Request, res: Response) => {
+    try {
+        const id=req.params.userId;
+      const result = await userservice.getaUserDB(id);
+      res.status(200).json({
+        sucess: true,
+        message: 'Student get sucessfully',
+        data: result,
+      });
+    } catch (error) {
+    res.status(404).json(
+        {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+    )
     }
-    catch(error){
-        console.log(error);
-    }
-}
+  };
 export const usercontroller = {
   createuser,
-  getalluser
+  getalluser,
+  getaUser
 };
