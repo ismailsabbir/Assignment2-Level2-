@@ -106,8 +106,8 @@ const getUserOrdersDB = async (userid: string) => {
   if (await UserModel.isuserExit(userid)) {
     const user = await UserModel.findOne({ userId: userid });
     if (user?.orders) {
-      const result = user?.orders;
-      return result;
+      const orders = user?.orders;
+      return {orders};
     }
   }
 };

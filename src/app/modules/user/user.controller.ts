@@ -16,10 +16,9 @@ const createuser = async (req: Request, res: Response) => {
       });
     }
     const result = await userservice.createUserDB(user);
-    console.log(result);
     res.status(200).json({
       sucess: true,
-      message: 'User created successfully',
+      message: 'User created successfully!',
       data: result,
     });
   } catch (error) {
@@ -38,11 +37,18 @@ const getalluser = async (req: Request, res: Response) => {
     const result = await userservice.getUserFromDb();
     res.status(200).json({
       sucess: true,
-      message: 'Student get sucessfully',
+      message: 'Users fetched successfully!',
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    res.status(404).json({
+      success: false,
+      message: 'Users fetched failed',
+      error: {
+        code: 404,
+        description: error,
+      },
+    });
   }
 };
 const getaUser = async (req: Request, res: Response) => {
@@ -113,7 +119,6 @@ const updateaUser = async (req: Request, res: Response) => {
 const delateaUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
-    console.log(id);
     const result = await userservice.delateaUserDB(id);
     if (result) {
       res.status(200).json({
@@ -147,11 +152,10 @@ const addorder = async (req: Request, res: Response) => {
     const id = req.params.userId;
     const order = req.body;
     const result = await userservice.addorderDB(id, order);
-    console.log('result', result);
     if (result) {
       res.status(200).json({
         sucess: true,
-        message: 'order created successfully',
+        message: 'Order created successfully!',
         data: null,
       });
     } else {
@@ -176,12 +180,9 @@ const addorder = async (req: Request, res: Response) => {
   }
 };
 const getUserOrder = async (req: Request, res: Response) => {
-  console.log('order');
   try {
     const id = req.params.userId;
-    console.log(id);
     const result = await userservice.getUserOrdersDB(id);
-    console.log('result', result);
     if (result) {
       res.status(200).json({
         sucess: true,
@@ -217,7 +218,7 @@ const getUserOrderTotalPrice = async (req: Request, res: Response) => {
     if (result) {
       res.status(200).json({
         sucess: true,
-        message: 'Order fetched successfully!',
+        message: 'Total price calculated successfully!',
         data: result,
       });
     } else {

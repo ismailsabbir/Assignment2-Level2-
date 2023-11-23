@@ -7,11 +7,11 @@ app.use(cors());
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello typescript mongoose server !');
 });
-app.post('/POST/api/users', userRoute);
-app.get('/GET/api/users', userRoute);
-app.get('/GET/api/users/:userId', userRoute);
-app.put('/PUT/api/users/:userId', userRoute);
-app.delete(`/DELETE/api/users/:userId`, userRoute);
+app.post('/api/users', userRoute);
+app.get('/api/users', userRoute);
+app.get('/api/users/:userId', userRoute);
+app.put('/api/users/:userId', userRoute);
+app.delete(`/api/users/:userId`, userRoute);
 app.put(`/api/users/:userId/orders`, userRoute);
 app.get(`/api/users/:userId/orders`, userRoute);
 app.get(`/api/users/:userId/orders/total-price`, userRoute);

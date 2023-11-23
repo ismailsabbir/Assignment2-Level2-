@@ -23,7 +23,10 @@ export const addressSchema = new Schema<TAddress>({
 });
 
 const userschema = new Schema<TUser, userstaticmathod>({
-  userId: { type: Number, unique: true },
+  userId: { 
+    type: Number, 
+    unique: true
+   },
   username: {
     type: String,
     unique: true,
@@ -62,7 +65,7 @@ userschema.pre('save', async function (next) {
   user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt));
   next();
 });
-userschema.post('save', function (doco, next) {
+userschema.post('save', function (doco:TUser, next) {
   doco.password = '';
   next();
 });
