@@ -35,13 +35,43 @@ const getaUserDB=async(id:string)=>{
 })
 return result;
   }
-    // const result=await UserModel.findOne({userId: id});
+}
+const delateaUserDB=async(id:string)=>{
+  if(await UserModel.isuserExit(id)){
+    const result=await UserModel.deleteOne({userId:id})
+return result;
+  }
+}
 
+const updateaUserDB=async(id:string,user:TUser)=>{
+  if(await UserModel.isuserExit(id)){
+    const newid:number=parseInt(id)
+    const result=await UserModel.updateOne({userId:newid},
+      {
+        $set: {
+          userId: user?.userId,
+          username: user?.username,
+          password: user?.password,
+          fullName: user?.fullName,
+          age: user?.age,
+          email: user?.email,
+          isActive: user?.isActive,
+          hobbies: user?.hobbies,
+          address:user?.address ,
+          orders: user?.orders,
+        }
+    }
+)
+
+return result
+  }
 }
 
 
 export const userservice = {
   createUserDB,
   getUserFromDb,
-  getaUserDB
+  getaUserDB,
+  updateaUserDB,
+  delateaUserDB
 };

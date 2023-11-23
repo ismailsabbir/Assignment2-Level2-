@@ -72,8 +72,51 @@ const getaUser = async (req: Request, res: Response) => {
     )
     }
   };
+
+
+  const updateaUser = async (req: Request, res: Response) => {
+    try {
+      const id=req.params.userId;
+      const user = req.body;
+      const result = await userservice.updateaUserDB(id,user);
+      if(result){
+        const updateduser=await userservice.getaUserDB(id);
+        res.status(200).json({
+          sucess: true,
+          message: 'User update successfully!',
+          data:updateduser ,
+        });
+      }
+      else{
+        res.status(404).json(
+          {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+        )
+      }
+
+    } catch (error) {
+    res.status(404).json(
+        {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+    )
+    }
+  };
+
 export const usercontroller = {
   createuser,
   getalluser,
-  getaUser
+  getaUser,
+  updateaUser
 };

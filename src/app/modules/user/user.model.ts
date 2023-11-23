@@ -66,10 +66,7 @@ userschema.post('save',function(doco,next){
     doco.password='';
     next()
 })
-// userschema.post('find',function(docu,next){
-//   docu.password='';
-//   next()
-// })
+
 userschema.statics.isuserExit=async function(id:string){
   const exituser=UserModel.findOne({userId:id});
   return exituser;
