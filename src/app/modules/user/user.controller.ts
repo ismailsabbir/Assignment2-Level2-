@@ -113,10 +113,49 @@ const getaUser = async (req: Request, res: Response) => {
     )
     }
   };
+  const delateaUser = async (req: Request, res: Response) => {
+    try {
+      const id=req.params.userId;
+      console.log(id);
+      const result = await userservice.delateaUserDB(id);
+      if(result){
+        res.status(200).json({
+          sucess: true,
+          message: 'User deleted successfully',
+          data:result,
+        });
+      }
+      else{
+        res.status(404).json(
+          {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+        )
+      }
+
+    } catch (error) {
+    res.status(404).json(
+        {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+    )
+    }
+  };
 
 export const usercontroller = {
   createuser,
   getalluser,
   getaUser,
-  updateaUser
+  updateaUser,
+  delateaUser
 };

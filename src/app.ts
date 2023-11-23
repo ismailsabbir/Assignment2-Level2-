@@ -11,7 +11,6 @@ app.post('/POST/api/users', userRoute);
 app.get('/GET/api/users', userRoute);
 app.get('/GET/api/users/:userId', userRoute);
 app.put('/PUT/api/users/:userId', userRoute);
-app.delete('/DELETE/api/users/:userId', userRoute);
-
+app.delete(`/DELETE/api/users/:userId`,userRoute);
 
 export default app;
