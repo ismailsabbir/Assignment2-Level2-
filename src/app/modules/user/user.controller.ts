@@ -5,6 +5,7 @@ const createuser = async (req: Request, res: Response) => {
   try {
     const user = req.body.user;
     const { error, value } = userSchema.validate(user);
+    console.log(value);
     if (error) {
       res.status(404).json({
         success: false,

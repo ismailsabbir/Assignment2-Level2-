@@ -16,32 +16,32 @@ const createuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const user = req.body.user;
         const { error, value } = user_validation_1.userSchema.validate(user);
+        console.log(value);
         if (error) {
             res.status(404).json({
-                "success": false,
-                "message": "User creation failed",
-                "error": {
-                    "code": 404,
-                    "description": error.details
-                }
+                success: false,
+                message: 'User creation failed',
+                error: {
+                    code: 404,
+                    description: error.details,
+                },
             });
         }
         const result = yield user_service_1.userservice.createUserDB(user);
-        console.log(result);
         res.status(200).json({
             sucess: true,
-            message: 'User created successfully',
+            message: 'User created successfully!',
             data: result,
         });
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User creation failed",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User creation failed',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
@@ -50,12 +50,19 @@ const getalluser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const result = yield user_service_1.userservice.getUserFromDb();
         res.status(200).json({
             sucess: true,
-            message: 'Student get sucessfully',
+            message: 'Users fetched successfully!',
             data: result,
         });
     }
     catch (error) {
-        console.log(error);
+        res.status(404).json({
+            success: false,
+            message: 'Users fetched failed',
+            error: {
+                code: 404,
+                description: error,
+            },
+        });
     }
 });
 const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -71,23 +78,23 @@ const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         else {
             res.status(404).json({
-                "success": false,
-                "message": "User not found",
-                "error": {
-                    "code": 404,
-                    "description": "User not found!"
-                }
+                success: false,
+                message: 'User not found',
+                error: {
+                    code: 404,
+                    description: 'User not found!',
+                },
             });
         }
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User not found",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User not found',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
@@ -106,30 +113,29 @@ const updateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             res.status(404).json({
-                "success": false,
-                "message": "User not found",
-                "error": {
-                    "code": 404,
-                    "description": "User not found!"
-                }
+                success: false,
+                message: 'User not found',
+                error: {
+                    code: 404,
+                    description: 'User not found!',
+                },
             });
         }
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User not found",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User not found',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
 const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
-        console.log(id);
         const result = yield user_service_1.userservice.delateaUserDB(id);
         if (result) {
             res.status(200).json({
@@ -140,23 +146,23 @@ const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             res.status(404).json({
-                "success": false,
-                "message": "User not found",
-                "error": {
-                    "code": 404,
-                    "description": "User not found!"
-                }
+                success: false,
+                message: 'User not found',
+                error: {
+                    code: 404,
+                    description: 'User not found!',
+                },
             });
         }
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User not found",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User not found',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
@@ -165,43 +171,39 @@ const addorder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const id = req.params.userId;
         const order = req.body;
         const result = yield user_service_1.userservice.addorderDB(id, order);
-        console.log("result", result);
         if (result) {
             res.status(200).json({
                 sucess: true,
-                message: 'order created successfully',
+                message: 'Order created successfully!',
                 data: null,
             });
         }
         else {
             res.status(404).json({
-                "success": false,
-                "message": "User not found",
-                "error": {
-                    "code": 404,
-                    "description": "User not found!"
-                }
+                success: false,
+                message: 'User not found',
+                error: {
+                    code: 404,
+                    description: 'User not found!',
+                },
             });
         }
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User not found",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User not found',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
 const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('order');
     try {
         const id = req.params.userId;
-        console.log(id);
         const result = yield user_service_1.userservice.getUserOrdersDB(id);
-        console.log("result", result);
         if (result) {
             res.status(200).json({
                 sucess: true,
@@ -211,23 +213,23 @@ const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         else {
             res.status(404).json({
-                "success": false,
-                "message": "User not found",
-                "error": {
-                    "code": 404,
-                    "description": "User not found!"
-                }
+                success: false,
+                message: 'User not found',
+                error: {
+                    code: 404,
+                    description: 'User not found!',
+                },
             });
         }
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User not found",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User not found',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
@@ -238,29 +240,29 @@ const getUserOrderTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, f
         if (result) {
             res.status(200).json({
                 sucess: true,
-                message: 'Order fetched successfully!',
+                message: 'Total price calculated successfully!',
                 data: result,
             });
         }
         else {
             res.status(404).json({
-                "success": false,
-                "message": "User not found",
-                "error": {
-                    "code": 404,
-                    "description": "User not found!"
-                }
+                success: false,
+                message: 'User not found',
+                error: {
+                    code: 404,
+                    description: 'User not found!',
+                },
             });
         }
     }
     catch (error) {
         res.status(404).json({
-            "success": false,
-            "message": "User not found",
-            "error": {
-                "code": 404,
-                "description": "User not found!"
-            }
+            success: false,
+            message: 'User not found',
+            error: {
+                code: 404,
+                description: 'User not found!',
+            },
         });
     }
 });
@@ -272,5 +274,5 @@ exports.usercontroller = {
     delateaUser,
     addorder,
     getUserOrder,
-    getUserOrderTotalPrice
+    getUserOrderTotalPrice,
 };

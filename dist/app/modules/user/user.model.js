@@ -36,7 +36,10 @@ exports.addressSchema = new mongoose_1.Schema({
     },
 });
 const userschema = new mongoose_1.Schema({
-    userId: { type: Number, unique: true },
+    userId: {
+        type: Number,
+        unique: true,
+    },
     username: {
         type: String,
         unique: true,

@@ -1,11 +1,16 @@
 import TUser, { TOrders } from './user.interface';
 import { UserModel } from './user.model';
 
+// for creating User
+
 const createUserDB = async (user: TUser) => {
   const result = await UserModel.create(user);
   console.log(result);
   return result;
 };
+
+// For Get All User Information
+
 const getUserFromDb = async () => {
   const result = UserModel.aggregate([
     { $match: {} },
@@ -21,6 +26,9 @@ const getUserFromDb = async () => {
   ]);
   return result;
 };
+
+// Get a Single User Information by UserId
+
 const getaUserDB = async (id: string) => {
   if (await UserModel.isuserExit(id)) {
     const result = await UserModel.findOne(
@@ -40,12 +48,17 @@ const getaUserDB = async (id: string) => {
     return result;
   }
 };
+
+// Delate User data from database
+
 const delateaUserDB = async (id: string) => {
   if (await UserModel.isuserExit(id)) {
     const result = await UserModel.deleteOne({ userId: id });
     return result;
   }
 };
+
+// Update user data
 
 const updateaUserDB = async (id: string, user: TUser) => {
   if (await UserModel.isuserExit(id)) {
@@ -71,6 +84,8 @@ const updateaUserDB = async (id: string, user: TUser) => {
     return result;
   }
 };
+
+// Add Order
 
 const addorderDB = async (userid: string, order: TOrders) => {
   if (await UserModel.isuserExit(userid)) {
@@ -102,19 +117,23 @@ const addorderDB = async (userid: string, order: TOrders) => {
   }
 };
 
+// Get all Orders
+
 const getUserOrdersDB = async (userid: string) => {
   if (await UserModel.isuserExit(userid)) {
     const user = await UserModel.findOne({ userId: userid });
     if (user?.orders) {
       const orders = user?.orders;
-      return {orders};
+      return { orders };
     }
   }
 };
+
+// Get Orders Total Price
+
 const getOrdersTotlPriceDB = async (userid: string) => {
   const newuserid = parseInt(userid);
   if (await UserModel.isuserExit(userid)) {
-    // const user = await UserModel.findOne({userId:userid});
     const result = await UserModel.aggregate([
       { $match: { userId: { $eq: newuserid } } },
       { $unwind: '$orders' },
