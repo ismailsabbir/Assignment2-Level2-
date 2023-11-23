@@ -12,5 +12,8 @@ app.get('/GET/api/users', userRoute);
 app.get('/GET/api/users/:userId', userRoute);
 app.put('/PUT/api/users/:userId', userRoute);
 app.delete(`/DELETE/api/users/:userId`,userRoute);
+app.put(`/api/users/:userId/orders`,userRoute);
+app.get(`/api/users/:userId/orders`,userRoute);
+
 
 export default app;

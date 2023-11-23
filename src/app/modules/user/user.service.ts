@@ -1,4 +1,4 @@
-import TUser from './user.interface';
+import TUser, { TOrders } from './user.interface';
 import { UserModel } from './user.model';
 
 const createUserDB = async (user: TUser) => {
@@ -67,11 +67,41 @@ return result
   }
 }
 
+const addorderDB=async(userid:string,order:TOrders)=>{
+  if(await UserModel.isuserExit(userid)){
+    const user = await UserModel.findOne({userId:userid});
+    if (!user) {
+      return;
+    }
+    if (user.orders) {
+      const result= await UserModel.updateOne({userId:userid},
+        {
+          $push: {
+            orders: order,
+          }
+      }
+      )
+      return result
+    } else {
+      const result= await UserModel.updateOne({userId:userid},
+        {
+          $set: {
+          orders:[order]
+          }
+      }
+      )
+      return result
+    }
+
+  }
+
+}
 
 export const userservice = {
   createUserDB,
   getUserFromDb,
   getaUserDB,
   updateaUserDB,
-  delateaUserDB
+  delateaUserDB,
+  addorderDB
 };

@@ -122,7 +122,7 @@ const getaUser = async (req: Request, res: Response) => {
         res.status(200).json({
           sucess: true,
           message: 'User deleted successfully',
-          data:result,
+          data:null,
         });
       }
       else{
@@ -151,11 +151,51 @@ const getaUser = async (req: Request, res: Response) => {
     )
     }
   };
+  const addorder=async (req: Request, res: Response) => {
+    try {
+      const id=req.params.userId;
+      const order=req.body;
+      const result = await userservice.addorderDB(id,order);
+      console.log("result",result);
+      if(result){
+        res.status(200).json({
+          sucess: true,
+          message: 'order created successfully',
+          data:null,
+        });
+      }
+      else{
+        res.status(404).json(
+          {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+        )
+      }
+
+    } catch (error) {
+    res.status(404).json(
+        {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+    )
+    }
+  }
 
 export const usercontroller = {
   createuser,
   getalluser,
   getaUser,
   updateaUser,
-  delateaUser
+  delateaUser,
+  addorder
 };
