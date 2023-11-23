@@ -7,5 +7,7 @@ route.get(`/GET/api/users/:userId`,usercontroller.getaUser)
 route.put(`/PUT/api/users/:userId`,usercontroller.updateaUser)
 route.delete(`/DELETE/api/users/:userId`,usercontroller.delateaUser)
 route.put(`/api/users/:userId/orders`,usercontroller.addorder)
+route.get(`/api/users/:userId/orders`,usercontroller.getUserOrder)
+
 
 export const userRoute = route;

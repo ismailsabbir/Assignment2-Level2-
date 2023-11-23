@@ -97,11 +97,24 @@ const addorderDB=async(userid:string,order:TOrders)=>{
 
 }
 
+
+const getUserOrdersDB=async(userid:string)=>{
+  if(await UserModel.isuserExit(userid)){
+    const user = await UserModel.findOne({userId:userid});
+    if (user?.orders) {
+      const result=user?.orders;
+      return result
+    }
+  }
+
+}
+
 export const userservice = {
   createUserDB,
   getUserFromDb,
   getaUserDB,
   updateaUserDB,
   delateaUserDB,
-  addorderDB
+  addorderDB,
+  getUserOrdersDB
 };
