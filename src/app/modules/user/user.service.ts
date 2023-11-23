@@ -3,6 +3,7 @@ import { UserModel } from './user.model';
 
 const createUserDB = async (user: TUser) => {
   const result = await UserModel.create(user);
+  console.log(result);
   return result;
 };
 const getUserFromDb = async () => {
