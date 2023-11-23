@@ -22,7 +22,7 @@ export const addressSchema = new Schema<TAddress>({
   },
 });
 
-const userschema = new Schema<TUser,userstaticmathod>({
+const userschema = new Schema<TUser, userstaticmathod>({
   userId: { type: Number, unique: true },
   username: {
     type: String,
@@ -57,18 +57,18 @@ const userschema = new Schema<TUser,userstaticmathod>({
     },
   },
 });
-userschema.pre('save',async function(next){
-    const user=this;
-    user.password=await bcrypt.hash(user.password,Number(config.bcrypt_salt));
-    next()
+userschema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt));
+  next();
 });
-userschema.post('save',function(doco,next){
-    doco.password='';
-    next()
-})
+userschema.post('save', function (doco, next) {
+  doco.password = '';
+  next();
+});
 
-userschema.statics.isuserExit=async function(id:string){
-  const exituser=UserModel.findOne({userId:id});
+userschema.statics.isuserExit = async function (id: string) {
+  const exituser = UserModel.findOne({ userId: id });
   return exituser;
-}
-export const UserModel = model<TUser,userstaticmathod>('users', userschema);
+};
+export const UserModel = model<TUser, userstaticmathod>('users', userschema);

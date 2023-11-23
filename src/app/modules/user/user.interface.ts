@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model } from 'mongoose';
 
 export type TName = {
   firstName: string;
@@ -28,7 +28,7 @@ export type TUser = {
   address: TAddress;
   orders: TOrders[];
 };
-export interface userstaticmathod extends Model<TUser>{
-  isuserExit(id:string):Promise<TUser|null>
+export interface userstaticmathod extends Model<TUser> {
+  isuserExit(id: string): Promise<TUser | null>;
 }
 export default TUser;

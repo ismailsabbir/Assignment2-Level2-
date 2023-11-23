@@ -11,19 +11,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usercontroller = void 0;
 const user_service_1 = require("./user.service");
+const user_validation_1 = require("./user.validation");
 const createuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.body.user;
+        const { error, value } = user_validation_1.userSchema.validate(user);
+        if (error) {
+            res.status(404).json({
+                "success": false,
+                "message": "User creation failed",
+                "error": {
+                    "code": 404,
+                    "description": error.details
+                }
+            });
+        }
         const result = yield user_service_1.userservice.createUserDB(user);
         console.log(result);
         res.status(200).json({
             sucess: true,
-            message: 'Susessfull created',
+            message: 'User created successfully',
             data: result,
         });
     }
     catch (error) {
-        console.log(error);
+        res.status(404).json({
+            "success": false,
+            "message": "User creation failed",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
     }
 });
 const getalluser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -39,7 +58,219 @@ const getalluser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.log(error);
     }
 });
+const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.userId;
+        const result = yield user_service_1.userservice.getaUserDB(id);
+        if (result) {
+            res.status(200).json({
+                sucess: true,
+                message: 'User fetched successfully!',
+                data: result,
+            });
+        }
+        else {
+            res.status(404).json({
+                "success": false,
+                "message": "User not found",
+                "error": {
+                    "code": 404,
+                    "description": "User not found!"
+                }
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
+    }
+});
+const updateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.userId;
+        const user = req.body;
+        const result = yield user_service_1.userservice.updateaUserDB(id, user);
+        if (result) {
+            const updateduser = yield user_service_1.userservice.getaUserDB(id);
+            res.status(200).json({
+                sucess: true,
+                message: 'User update successfully!',
+                data: updateduser,
+            });
+        }
+        else {
+            res.status(404).json({
+                "success": false,
+                "message": "User not found",
+                "error": {
+                    "code": 404,
+                    "description": "User not found!"
+                }
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
+    }
+});
+const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.userId;
+        console.log(id);
+        const result = yield user_service_1.userservice.delateaUserDB(id);
+        if (result) {
+            res.status(200).json({
+                sucess: true,
+                message: 'User deleted successfully',
+                data: null,
+            });
+        }
+        else {
+            res.status(404).json({
+                "success": false,
+                "message": "User not found",
+                "error": {
+                    "code": 404,
+                    "description": "User not found!"
+                }
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
+    }
+});
+const addorder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.userId;
+        const order = req.body;
+        const result = yield user_service_1.userservice.addorderDB(id, order);
+        console.log("result", result);
+        if (result) {
+            res.status(200).json({
+                sucess: true,
+                message: 'order created successfully',
+                data: null,
+            });
+        }
+        else {
+            res.status(404).json({
+                "success": false,
+                "message": "User not found",
+                "error": {
+                    "code": 404,
+                    "description": "User not found!"
+                }
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
+    }
+});
+const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('order');
+    try {
+        const id = req.params.userId;
+        console.log(id);
+        const result = yield user_service_1.userservice.getUserOrdersDB(id);
+        console.log("result", result);
+        if (result) {
+            res.status(200).json({
+                sucess: true,
+                message: 'Order fetched successfully!',
+                data: result,
+            });
+        }
+        else {
+            res.status(404).json({
+                "success": false,
+                "message": "User not found",
+                "error": {
+                    "code": 404,
+                    "description": "User not found!"
+                }
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
+    }
+});
+const getUserOrderTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.userId;
+        const result = yield user_service_1.userservice.getOrdersTotlPriceDB(id);
+        if (result) {
+            res.status(200).json({
+                sucess: true,
+                message: 'Order fetched successfully!',
+                data: result,
+            });
+        }
+        else {
+            res.status(404).json({
+                "success": false,
+                "message": "User not found",
+                "error": {
+                    "code": 404,
+                    "description": "User not found!"
+                }
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        });
+    }
+});
 exports.usercontroller = {
     createuser,
-    getalluser
+    getalluser,
+    getaUser,
+    updateaUser,
+    delateaUser,
+    addorder,
+    getUserOrder,
+    getUserOrderTotalPrice
 };

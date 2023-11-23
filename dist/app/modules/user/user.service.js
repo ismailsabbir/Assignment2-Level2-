@@ -13,13 +13,126 @@ exports.userservice = void 0;
 const user_model_1 = require("./user.model");
 const createUserDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.UserModel.create(user);
+    console.log(result);
     return result;
 });
 const getUserFromDb = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = user_model_1.UserModel.find();
+    const result = user_model_1.UserModel.aggregate([
+        { $match: {} },
+        {
+            $project: {
+                username: 1,
+                fullName: 1,
+                age: 1,
+                email: 1,
+                address: 1
+            }
+        }
+    ]);
     return result;
+});
+const getaUserDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield user_model_1.UserModel.isuserExit(id)) {
+        const result = yield user_model_1.UserModel.findOne({ userId: id }, {
+            userId: 1,
+            username: 1,
+            fullName: 1,
+            age: 1,
+            email: 1,
+            isActive: 1,
+            hobbies: 1,
+            address: 1,
+            orders: 1
+        });
+        return result;
+    }
+});
+const delateaUserDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield user_model_1.UserModel.isuserExit(id)) {
+        const result = yield user_model_1.UserModel.deleteOne({ userId: id });
+        return result;
+    }
+});
+const updateaUserDB = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield user_model_1.UserModel.isuserExit(id)) {
+        const newid = parseInt(id);
+        const result = yield user_model_1.UserModel.updateOne({ userId: newid }, {
+            $set: {
+                userId: user === null || user === void 0 ? void 0 : user.userId,
+                username: user === null || user === void 0 ? void 0 : user.username,
+                password: user === null || user === void 0 ? void 0 : user.password,
+                fullName: user === null || user === void 0 ? void 0 : user.fullName,
+                age: user === null || user === void 0 ? void 0 : user.age,
+                email: user === null || user === void 0 ? void 0 : user.email,
+                isActive: user === null || user === void 0 ? void 0 : user.isActive,
+                hobbies: user === null || user === void 0 ? void 0 : user.hobbies,
+                address: user === null || user === void 0 ? void 0 : user.address,
+                orders: user === null || user === void 0 ? void 0 : user.orders,
+            }
+        });
+        return result;
+    }
+});
+const addorderDB = (userid, order) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield user_model_1.UserModel.isuserExit(userid)) {
+        const user = yield user_model_1.UserModel.findOne({ userId: userid });
+        if (!user) {
+            return;
+        }
+        if (user.orders) {
+            const result = yield user_model_1.UserModel.updateOne({ userId: userid }, {
+                $push: {
+                    orders: order,
+                }
+            });
+            return result;
+        }
+        else {
+            const result = yield user_model_1.UserModel.updateOne({ userId: userid }, {
+                $set: {
+                    orders: [order]
+                }
+            });
+            return result;
+        }
+    }
+});
+const getUserOrdersDB = (userid) => __awaiter(void 0, void 0, void 0, function* () {
+    if (yield user_model_1.UserModel.isuserExit(userid)) {
+        const user = yield user_model_1.UserModel.findOne({ userId: userid });
+        if (user === null || user === void 0 ? void 0 : user.orders) {
+            const result = user === null || user === void 0 ? void 0 : user.orders;
+            return result;
+        }
+    }
+});
+const getOrdersTotlPriceDB = (userid) => __awaiter(void 0, void 0, void 0, function* () {
+    const newuserid = parseInt(userid);
+    if (yield user_model_1.UserModel.isuserExit(userid)) {
+        // const user = await UserModel.findOne({userId:userid});
+        const result = yield user_model_1.UserModel.aggregate([
+            { $match: { userId: { $eq: newuserid } } },
+            { $unwind: "$orders" },
+            { $group: {
+                    _id: null,
+                    totalprice: { $sum: "$orders.price" }
+                } },
+            { $project: {
+                    totalprice: 1
+                } }
+        ]);
+        const totalPrice = result[0].totalprice;
+        const result1 = { totalPrice };
+        return result1;
+    }
 });
 exports.userservice = {
     createUserDB,
-    getUserFromDb
+    getUserFromDb,
+    getaUserDB,
+    updateaUserDB,
+    delateaUserDB,
+    addorderDB,
+    getUserOrdersDB,
+    getOrdersTotlPriceDB
 };
