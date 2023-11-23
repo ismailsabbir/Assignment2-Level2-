@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import TUser, { TAddress, TName } from './user.interface';
+import TUser, { TAddress, TName, userstaticmathod } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 export const nameSchema = new Schema<TName>({
@@ -22,7 +22,7 @@ export const addressSchema = new Schema<TAddress>({
   },
 });
 
-const userschema = new Schema<TUser>({
+const userschema = new Schema<TUser,userstaticmathod>({
   userId: { type: Number, unique: true },
   username: {
     type: String,
@@ -66,7 +66,12 @@ userschema.post('save',function(doco,next){
     doco.password='';
     next()
 })
-// userschema.post('aggregate',function(doc,next){
-//     next()
+// userschema.post('find',function(docu,next){
+//   docu.password='';
+//   next()
 // })
-export const UserModel = model<TUser>('users', userschema);
+userschema.statics.isuserExit=async function(id:string){
+  const exituser=UserModel.findOne({userId:id});
+  return exituser;
+}
+export const UserModel = model<TUser,userstaticmathod>('users', userschema);
