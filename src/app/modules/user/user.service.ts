@@ -108,7 +108,28 @@ const getUserOrdersDB=async(userid:string)=>{
   }
 
 }
+const getOrdersTotlPriceDB=async(userid:string)=>{
+  const newuserid=parseInt(userid);
+  if(await UserModel.isuserExit(userid)){
+    // const user = await UserModel.findOne({userId:userid});
+    const result =await UserModel.aggregate([
+      {$match:{userId:{$eq:newuserid}}},
+      {$unwind:"$orders"},
+      {$group:{
+        _id: null,
+        totalprice:{$sum:"$orders.price"}
+      }},
+      {$project:{
+        totalprice:1
+      }}
+  ])
+    const  totalPrice=result[0].totalprice
+    const result1={totalPrice}
+  
+    return result1
+  }
 
+}
 export const userservice = {
   createUserDB,
   getUserFromDb,
@@ -116,5 +137,6 @@ export const userservice = {
   updateaUserDB,
   delateaUserDB,
   addorderDB,
-  getUserOrdersDB
+  getUserOrdersDB,
+  getOrdersTotlPriceDB
 };

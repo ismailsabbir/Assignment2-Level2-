@@ -8,6 +8,6 @@ route.put(`/PUT/api/users/:userId`,usercontroller.updateaUser)
 route.delete(`/DELETE/api/users/:userId`,usercontroller.delateaUser)
 route.put(`/api/users/:userId/orders`,usercontroller.addorder)
 route.get(`/api/users/:userId/orders`,usercontroller.getUserOrder)
-
+route.get(`/api/users/:userId/orders/total-price`,usercontroller.getUserOrderTotalPrice)
 
 export const userRoute = route;

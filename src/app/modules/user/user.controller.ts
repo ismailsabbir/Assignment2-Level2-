@@ -231,7 +231,43 @@ const getaUser = async (req: Request, res: Response) => {
     }
   }
 
+  const getUserOrderTotalPrice=async (req: Request, res: Response) => {
+    try {
+      const id=req.params.userId;
+      const result = await userservice.getOrdersTotlPriceDB(id);
+      if(result){
+        res.status(200).json({
+          sucess: true,
+          message: 'Order fetched successfully!',
+          data:result,
+        });
+      }
+      else{
+        res.status(404).json(
+          {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+        )
+      }
 
+    } catch (error) {
+    res.status(404).json(
+        {
+            "success": false,
+            "message": "User not found",
+            "error": {
+                "code": 404,
+                "description": "User not found!"
+            }
+        }
+    )
+    }
+  }
 export const usercontroller = {
   createuser,
   getalluser,
@@ -239,5 +275,6 @@ export const usercontroller = {
   updateaUser,
   delateaUser,
   addorder,
-  getUserOrder
+  getUserOrder,
+  getUserOrderTotalPrice
 };
