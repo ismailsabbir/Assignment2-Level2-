@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import TUser, { TAddress, TName, userstaticmathod } from './user.interface';
+import TUser, { TAddress, TName, TOrders, userstaticmathod } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 export const nameSchema = new Schema<TName>({
@@ -21,7 +21,17 @@ export const addressSchema = new Schema<TAddress>({
     type: String,
   },
 });
-
+export const orderschema=new Schema<TOrders>({
+  productName: {
+    type: String,
+  },
+  price: {
+    type: Number,
+  },
+  quantity: {
+    type: Number,
+  },
+})
 const userschema = new Schema<TUser, userstaticmathod>({
   userId: {
     type: Number,
@@ -49,15 +59,7 @@ const userschema = new Schema<TUser, userstaticmathod>({
     type: addressSchema,
   },
   orders: {
-    productName: {
-      type: String,
-    },
-    price: {
-      type: Number,
-    },
-    quantity: {
-      type: Number,
-    },
+type:[orderschema],
   },
 });
 userschema.pre('save', async function (next) {

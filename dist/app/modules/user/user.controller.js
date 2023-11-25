@@ -236,7 +236,9 @@ const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 const getUserOrderTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
+        console.log(id);
         const result = yield user_service_1.userservice.getOrdersTotlPriceDB(id);
+        console.log(result);
         if (result) {
             res.status(200).json({
                 sucess: true,

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = exports.addressSchema = exports.nameSchema = void 0;
+exports.UserModel = exports.orderschema = exports.addressSchema = exports.nameSchema = void 0;
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
@@ -33,6 +33,17 @@ exports.addressSchema = new mongoose_1.Schema({
     },
     country: {
         type: String,
+    },
+});
+exports.orderschema = new mongoose_1.Schema({
+    productName: {
+        type: String,
+    },
+    price: {
+        type: Number,
+    },
+    quantity: {
+        type: Number,
     },
 });
 const userschema = new mongoose_1.Schema({
@@ -62,15 +73,7 @@ const userschema = new mongoose_1.Schema({
         type: exports.addressSchema,
     },
     orders: {
-        productName: {
-            type: String,
-        },
-        price: {
-            type: Number,
-        },
-        quantity: {
-            type: Number,
-        },
+        type: [exports.orderschema],
     },
 });
 userschema.pre('save', function (next) {

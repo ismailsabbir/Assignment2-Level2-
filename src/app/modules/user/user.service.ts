@@ -140,7 +140,7 @@ const getOrdersTotlPriceDB = async (userid: string) => {
       {
         $group: {
           _id: null,
-          totalprice: { $sum: '$orders.price' },
+          totalprice: { $sum: "$orders.price" },
         },
       },
       {
@@ -151,7 +151,6 @@ const getOrdersTotlPriceDB = async (userid: string) => {
     ]);
     const totalPrice = result[0].totalprice;
     const result1 = { totalPrice };
-
     return result1;
   }
 };

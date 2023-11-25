@@ -215,7 +215,9 @@ const getUserOrder = async (req: Request, res: Response) => {
 const getUserOrderTotalPrice = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
+    console.log(id);
     const result = await userservice.getOrdersTotlPriceDB(id);
+    console.log(result);
     if (result) {
       res.status(200).json({
         sucess: true,

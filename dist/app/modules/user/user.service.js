@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userservice = void 0;
 const user_model_1 = require("./user.model");
-// for creating User 
+// for creating User
 const createUserDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.UserModel.create(user);
     console.log(result);
@@ -50,7 +50,7 @@ const getaUserDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
         return result;
     }
 });
-// Delate User data from database 
+// Delate User data from database
 const delateaUserDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     if (yield user_model_1.UserModel.isuserExit(id)) {
         const result = yield user_model_1.UserModel.deleteOne({ userId: id });
@@ -78,7 +78,7 @@ const updateaUserDB = (id, user) => __awaiter(void 0, void 0, void 0, function* 
         return result;
     }
 });
-// Add Order 
+// Add Order
 const addorderDB = (userid, order) => __awaiter(void 0, void 0, void 0, function* () {
     if (yield user_model_1.UserModel.isuserExit(userid)) {
         const user = yield user_model_1.UserModel.findOne({ userId: userid });
@@ -123,7 +123,7 @@ const getOrdersTotlPriceDB = (userid) => __awaiter(void 0, void 0, void 0, funct
             {
                 $group: {
                     _id: null,
-                    totalprice: { $sum: '$orders.price' },
+                    totalprice: { $sum: "$orders.price" },
                 },
             },
             {
