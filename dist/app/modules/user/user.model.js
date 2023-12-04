@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = exports.orderschema = exports.addressSchema = exports.nameSchema = void 0;
+/* eslint-disable @typescript-eslint/no-this-alias */
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
@@ -49,11 +50,11 @@ exports.orderschema = new mongoose_1.Schema({
 const userschema = new mongoose_1.Schema({
     userId: {
         type: Number,
-        unique: true,
+        // unique: true,
     },
     username: {
         type: String,
-        unique: true,
+        // unique: true,
     },
     password: {
         type: String,
@@ -93,4 +94,11 @@ userschema.statics.isuserExit = function (id) {
         return exituser;
     });
 };
+// userschema.pre('save',async function(next){
+//   const isUserIdExist=await UserModel.find({userId:this.userId});
+//   if(isUserIdExist){
+//     throw new Error('Already Exist');
+//   }
+//   next();
+// })
 exports.UserModel = (0, mongoose_1.model)('users', userschema);

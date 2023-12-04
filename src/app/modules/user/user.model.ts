@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import TUser, { TAddress, TName, TOrders, userstaticmathod } from './user.interface';
+import TUser, {
+  TAddress,
+  TName,
+  TOrders,
+  userstaticmathod,
+} from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 export const nameSchema = new Schema<TName>({
@@ -21,7 +27,7 @@ export const addressSchema = new Schema<TAddress>({
     type: String,
   },
 });
-export const orderschema=new Schema<TOrders>({
+export const orderschema = new Schema<TOrders>({
   productName: {
     type: String,
   },
@@ -31,15 +37,15 @@ export const orderschema=new Schema<TOrders>({
   quantity: {
     type: Number,
   },
-})
+});
 const userschema = new Schema<TUser, userstaticmathod>({
   userId: {
     type: Number,
-    unique: true,
+    // unique: true,
   },
   username: {
     type: String,
-    unique: true,
+    // unique: true,
   },
   password: {
     type: String,
@@ -59,7 +65,7 @@ const userschema = new Schema<TUser, userstaticmathod>({
     type: addressSchema,
   },
   orders: {
-type:[orderschema],
+    type: [orderschema],
   },
 });
 userschema.pre('save', async function (next) {
@@ -76,4 +82,11 @@ userschema.statics.isuserExit = async function (id: string) {
   const exituser = UserModel.findOne({ userId: id });
   return exituser;
 };
+// userschema.pre('save',async function(next){
+//   const isUserIdExist=await UserModel.find({userId:this.userId});
+//   if(isUserIdExist){
+//     throw new Error('Already Exist');
+//   }
+//   next();
+// })
 export const UserModel = model<TUser, userstaticmathod>('users', userschema);

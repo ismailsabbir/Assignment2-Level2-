@@ -1,22 +1,14 @@
 import { Request, Response } from 'express';
 import { userservice } from './user.service';
-import { userSchema } from './user.validation';
+import userValidationSchema, {
+  userUpdatedValidationSchema,
+} from './user.validation';
+import TUser from './user.interface';
 const createuser = async (req: Request, res: Response) => {
   try {
     const user = req.body.user;
-    const { error, value } = userSchema.validate(user);
-    console.log(value);
-    if (error) {
-      res.status(404).json({
-        success: false,
-        message: 'User creation failed',
-        error: {
-          code: 404,
-          description: error.details,
-        },
-      });
-    }
-    const result = await userservice.createUserDB(user);
+    const zodParseData = userValidationSchema.parse(user);
+    const result = await userservice.createUserDB(zodParseData);
     res.status(200).json({
       sucess: true,
       message: 'User created successfully!',
@@ -28,11 +20,12 @@ const createuser = async (req: Request, res: Response) => {
       message: 'User creation failed',
       error: {
         code: 404,
-        description: 'User not found!',
+        description: 'Something went wrong!',
       },
     });
   }
 };
+
 const getalluser = async (req: Request, res: Response) => {
   try {
     const result = await userservice.getUserFromDb();
@@ -88,7 +81,8 @@ const updateaUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
     const user = req.body;
-    const result = await userservice.updateaUserDB(id, user);
+    const zodParseData = userUpdatedValidationSchema.parse(user);
+    const result = await userservice.updateaUserDB(id, zodParseData as TUser);
     if (result) {
       const updateduser = await userservice.getaUserDB(id);
       res.status(200).json({
@@ -215,9 +209,7 @@ const getUserOrder = async (req: Request, res: Response) => {
 const getUserOrderTotalPrice = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
-    console.log(id);
     const result = await userservice.getOrdersTotlPriceDB(id);
-    console.log(result);
     if (result) {
       res.status(200).json({
         sucess: true,

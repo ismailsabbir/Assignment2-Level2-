@@ -1,33 +1,59 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userSchema = exports.addressSchema = exports.nameSchema = void 0;
-const joi_1 = __importDefault(require("joi"));
-exports.nameSchema = joi_1.default.object({
-    firstName: joi_1.default.string(),
-    lastName: joi_1.default.string(),
+exports.userUpdatedValidationSchema = void 0;
+const zod_1 = require("zod");
+const nameSchema = zod_1.z.object({
+    firstName: zod_1.z.string(),
+    lastName: zod_1.z.string(),
 });
-exports.addressSchema = joi_1.default.object({
-    street: joi_1.default.string(),
-    city: joi_1.default.string(),
-    country: joi_1.default.string(),
+const addressSchema = zod_1.z.object({
+    street: zod_1.z.string(),
+    city: zod_1.z.string(),
+    country: zod_1.z.string(),
 });
-const orderSchema = joi_1.default.object({
-    productName: joi_1.default.string(),
-    price: joi_1.default.number(),
-    quantity: joi_1.default.number(),
+const orderSchema = zod_1.z.object({
+    productName: zod_1.z.string(),
+    price: zod_1.z.number(),
+    quantity: zod_1.z.number(),
 });
-exports.userSchema = joi_1.default.object({
-    userId: joi_1.default.number().integer(),
-    username: joi_1.default.string(),
-    password: joi_1.default.string(),
-    fullName: exports.nameSchema,
-    age: joi_1.default.number(),
-    email: joi_1.default.string().email(),
-    isActive: joi_1.default.boolean(),
-    hobbies: joi_1.default.array().items(joi_1.default.string()),
-    address: exports.addressSchema,
-    orders: joi_1.default.array().items(orderSchema),
+// Define the Zod schema for the main type
+const userValidationSchema = zod_1.z.object({
+    userId: zod_1.z.number().int(),
+    username: zod_1.z.string(),
+    password: zod_1.z.string(),
+    fullName: nameSchema,
+    age: zod_1.z.number(),
+    email: zod_1.z.string().email(),
+    isActive: zod_1.z.boolean(),
+    hobbies: zod_1.z.array(zod_1.z.string()),
+    address: addressSchema,
+    orders: zod_1.z.array(orderSchema),
 });
+const nameUpdatedSchema = zod_1.z.object({
+    firstName: zod_1.z.string().optional(),
+    lastName: zod_1.z.string().optional(),
+});
+const addressUpdatedSchema = zod_1.z.object({
+    street: zod_1.z.string().optional(),
+    city: zod_1.z.string().optional(),
+    country: zod_1.z.string().optional(),
+});
+const orderUpdatedSchema = zod_1.z.object({
+    productName: zod_1.z.string().optional(),
+    price: zod_1.z.number().optional(),
+    quantity: zod_1.z.number().optional(),
+});
+// Define the Zod schema for the main type
+exports.userUpdatedValidationSchema = zod_1.z.object({
+    userId: zod_1.z.number().int().optional(),
+    username: zod_1.z.string().optional(),
+    password: zod_1.z.string().optional(),
+    fullName: nameUpdatedSchema.optional(),
+    age: zod_1.z.number().optional(),
+    email: zod_1.z.string().email().optional(),
+    isActive: zod_1.z.boolean().optional(),
+    hobbies: zod_1.z.array(zod_1.z.string()).optional(),
+    address: addressUpdatedSchema.optional(),
+    orders: zod_1.z.array(orderUpdatedSchema).optional(),
+});
+exports.default = userValidationSchema;

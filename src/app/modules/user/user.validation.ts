@@ -1,29 +1,63 @@
-import Joi from 'joi';
-export const nameSchema = Joi.object({
-  firstName: Joi.string(),
-  lastName: Joi.string(),
+import { z } from 'zod';
+
+const nameSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
 });
 
-export const addressSchema = Joi.object({
-  street: Joi.string(),
-  city: Joi.string(),
-  country: Joi.string(),
-});
-const orderSchema = Joi.object({
-  productName: Joi.string(),
-  price: Joi.number(),
-  quantity: Joi.number(),
+const addressSchema = z.object({
+  street: z.string(),
+  city: z.string(),
+  country: z.string(),
 });
 
-export const userSchema = Joi.object({
-  userId: Joi.number().integer(),
-  username: Joi.string(),
-  password: Joi.string(),
+const orderSchema = z.object({
+  productName: z.string(),
+  price: z.number(),
+  quantity: z.number(),
+});
+
+// Define the Zod schema for the main type
+const userValidationSchema = z.object({
+  userId: z.number().int(),
+  username: z.string(),
+  password: z.string(),
   fullName: nameSchema,
-  age: Joi.number(),
-  email: Joi.string().email(),
-  isActive: Joi.boolean(),
-  hobbies: Joi.array().items(Joi.string()),
+  age: z.number(),
+  email: z.string().email(),
+  isActive: z.boolean(),
+  hobbies: z.array(z.string()),
   address: addressSchema,
-  orders: Joi.array().items(orderSchema),
+  orders: z.array(orderSchema),
 });
+const nameUpdatedSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
+
+const addressUpdatedSchema = z.object({
+  street: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+});
+
+const orderUpdatedSchema = z.object({
+  productName: z.string().optional(),
+  price: z.number().optional(),
+  quantity: z.number().optional(),
+});
+
+// Define the Zod schema for the main type
+export const userUpdatedValidationSchema = z.object({
+  userId: z.number().int().optional(),
+  username: z.string().optional(),
+  password: z.string().optional(),
+  fullName: nameUpdatedSchema.optional(),
+  age: z.number().optional(),
+  email: z.string().email().optional(),
+  isActive: z.boolean().optional(),
+  hobbies: z.array(z.string()).optional(),
+  address: addressUpdatedSchema.optional(),
+  orders: z.array(orderUpdatedSchema).optional(),
+});
+export default userValidationSchema;

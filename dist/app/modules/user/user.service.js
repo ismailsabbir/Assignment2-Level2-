@@ -13,8 +13,11 @@ exports.userservice = void 0;
 const user_model_1 = require("./user.model");
 // for creating User
 const createUserDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    //   const userid=user?.userId.toString();
+    //   if (await UserModel.isuserExit(userid)) {
+    // throw new Error('already exist')
+    // }
     const result = yield user_model_1.UserModel.create(user);
-    console.log(result);
     return result;
 });
 // For Get All User Information
@@ -123,7 +126,7 @@ const getOrdersTotlPriceDB = (userid) => __awaiter(void 0, void 0, void 0, funct
             {
                 $group: {
                     _id: null,
-                    totalprice: { $sum: "$orders.price" },
+                    totalprice: { $sum: '$orders.price' },
                 },
             },
             {

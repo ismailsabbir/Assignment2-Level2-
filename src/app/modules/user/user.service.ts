@@ -4,8 +4,11 @@ import { UserModel } from './user.model';
 // for creating User
 
 const createUserDB = async (user: TUser) => {
+  //   const userid=user?.userId.toString();
+  //   if (await UserModel.isuserExit(userid)) {
+  // throw new Error('already exist')
+  // }
   const result = await UserModel.create(user);
-  console.log(result);
   return result;
 };
 
@@ -60,7 +63,7 @@ const delateaUserDB = async (id: string) => {
 
 // Update user data
 
-const updateaUserDB = async (id: string, user: TUser) => {
+const updateaUserDB = async (id: string, user: Partial<TUser>) => {
   if (await UserModel.isuserExit(id)) {
     const newid: number = parseInt(id);
     const result = await UserModel.updateOne(
@@ -140,7 +143,7 @@ const getOrdersTotlPriceDB = async (userid: string) => {
       {
         $group: {
           _id: null,
-          totalprice: { $sum: "$orders.price" },
+          totalprice: { $sum: '$orders.price' },
         },
       },
       {
