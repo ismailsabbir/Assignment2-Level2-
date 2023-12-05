@@ -4,6 +4,7 @@ import TUser, {
   TAddress,
   TName,
   TOrders,
+  userNamestaticmathod,
   userstaticmathod,
 } from './user.interface';
 import bcrypt from 'bcrypt';
@@ -38,14 +39,15 @@ export const orderschema = new Schema<TOrders>({
     type: Number,
   },
 });
-const userschema = new Schema<TUser, userstaticmathod>({
+// user Schema
+const userschema = new Schema<TUser, userstaticmathod, userNamestaticmathod>({
   userId: {
     type: Number,
-    // unique: true,
+    unique: true,
   },
   username: {
     type: String,
-    // unique: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -66,27 +68,31 @@ const userschema = new Schema<TUser, userstaticmathod>({
   },
   orders: {
     type: [orderschema],
+    default: undefined,
   },
 });
+// Password hasing middleware
 userschema.pre('save', async function (next) {
   const user = this;
   user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt));
   next();
 });
+// Password Hide for client response
 userschema.post('save', function (doco: TUser, next) {
   doco.password = '';
   next();
 });
-
+// user exist or not exist by username
+userschema.statics.isuserNameExit = async function (username: string) {
+  const exituserName = UserModel.findOne({ username: username });
+  return exituserName;
+};
+// user exist or not exist by userId
 userschema.statics.isuserExit = async function (id: string) {
   const exituser = UserModel.findOne({ userId: id });
   return exituser;
 };
-// userschema.pre('save',async function(next){
-//   const isUserIdExist=await UserModel.find({userId:this.userId});
-//   if(isUserIdExist){
-//     throw new Error('Already Exist');
-//   }
-//   next();
-// })
-export const UserModel = model<TUser, userstaticmathod>('users', userschema);
+
+// User Model
+export const UserModel = model<TUser>('users', userschema) as userstaticmathod &
+  userNamestaticmathod;

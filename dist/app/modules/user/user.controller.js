@@ -31,14 +31,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usercontroller = void 0;
 const user_service_1 = require("./user.service");
 const user_validation_1 = __importStar(require("./user.validation"));
+const zod_1 = require("zod");
+const user_model_1 = require("./user.model");
+const http_status_1 = __importDefault(require("http-status"));
+const zodErrorValidation_1 = __importDefault(require("../../../middleware/errors/zodErrorValidation"));
+// create user into DB
 const createuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.body.user;
         const zodParseData = user_validation_1.default.parse(user);
+        const userid = user.userId.toString();
+        const username = user.username;
+        // Check whether the user ID was previously present or not
+        if (yield user_model_1.UserModel.isuserExit(userid)) {
+            return res.status(http_status_1.default.BAD_REQUEST).json({
+                success: false,
+                message: 'User creation failed',
+                error: {
+                    code: http_status_1.default.BAD_REQUEST,
+                    description: 'User ID must Be Unique.',
+                },
+            });
+        }
+        // Check whether the user Name was previously present or not
+        else if (yield user_model_1.UserModel.isuserNameExit(username)) {
+            return res.status(http_status_1.default.BAD_REQUEST).json({
+                success: false,
+                message: 'User creation failed',
+                error: {
+                    code: http_status_1.default.BAD_REQUEST,
+                    description: 'The user name Must Be unique.',
+                },
+            });
+        }
         const result = yield user_service_1.userservice.createUserDB(zodParseData);
         res.status(200).json({
             sucess: true,
@@ -47,6 +79,21 @@ const createuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
+        // Check whether the Erro type is ZodError or not. I sent a response for the zod error in the client.
+        if (error instanceof zod_1.ZodError) {
+            const simplifiedError = (0, zodErrorValidation_1.default)(error);
+            const statusCode = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.statusCode;
+            const errorSources = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.errorSources;
+            return res.status(statusCode).json({
+                success: false,
+                message: 'User creation failed',
+                error: {
+                    code: simplifiedError.statusCode,
+                    description: errorSources,
+                },
+            });
+        }
+        // Sent response for other error
         res.status(404).json({
             success: false,
             message: 'User creation failed',
@@ -57,6 +104,7 @@ const createuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
 });
+// Get all user information from Db
 const getalluser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield user_service_1.userservice.getUserFromDb();
@@ -67,6 +115,7 @@ const getalluser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
+        // In fetching data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'Users fetched failed',
@@ -77,6 +126,7 @@ const getalluser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
 });
+// Get a single user from DB by userId
 const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
@@ -88,6 +138,7 @@ const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 data: result,
             });
         }
+        // Sent response for user id not found
         else {
             res.status(404).json({
                 success: false,
@@ -100,6 +151,7 @@ const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     catch (error) {
+        // In fetching data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'User not found',
@@ -110,10 +162,12 @@ const getaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
+// Update user information
 const updateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
         const user = req.body;
+        // Check  Zod Updeted validations
         const zodParseData = user_validation_1.userUpdatedValidationSchema.parse(user);
         const result = yield user_service_1.userservice.updateaUserDB(id, zodParseData);
         if (result) {
@@ -124,6 +178,7 @@ const updateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 data: updateduser,
             });
         }
+        // Sent response for user id not found
         else {
             res.status(404).json({
                 success: false,
@@ -136,6 +191,7 @@ const updateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (error) {
+        // In updateing data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'User not found',
@@ -146,6 +202,7 @@ const updateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 });
+// Delate User information from DB
 const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
@@ -157,6 +214,7 @@ const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 data: null,
             });
         }
+        // Sent response for user id not found
         else {
             res.status(404).json({
                 success: false,
@@ -169,6 +227,7 @@ const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (error) {
+        // In deleting data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'User not found',
@@ -179,6 +238,7 @@ const delateaUser = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 });
+// Add order information in user data
 const addorder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
@@ -191,6 +251,7 @@ const addorder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 data: null,
             });
         }
+        // Sent response for user id not found
         else {
             res.status(404).json({
                 success: false,
@@ -203,6 +264,7 @@ const addorder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     catch (error) {
+        // In add order data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'User not found',
@@ -213,6 +275,7 @@ const addorder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
+// Get only user order information
 const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
@@ -224,6 +287,7 @@ const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 data: result,
             });
         }
+        // Sent response for user id not found
         else {
             res.status(404).json({
                 success: false,
@@ -236,6 +300,7 @@ const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
     }
     catch (error) {
+        // In fetching data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'User not found',
@@ -246,6 +311,7 @@ const getUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
 });
+// Get user orders total amount from DB
 const getUserOrderTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.userId;
@@ -257,6 +323,7 @@ const getUserOrderTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, f
                 data: result,
             });
         }
+        // Sent response for user id not found
         else {
             res.status(404).json({
                 success: false,
@@ -269,6 +336,7 @@ const getUserOrderTotalPrice = (req, res) => __awaiter(void 0, void 0, void 0, f
         }
     }
     catch (error) {
+        // In fetching data from DB an error response is sent to the client.
         res.status(404).json({
             success: false,
             message: 'User not found',

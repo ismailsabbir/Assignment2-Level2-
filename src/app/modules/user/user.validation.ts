@@ -1,53 +1,56 @@
 import { z } from 'zod';
-
+// Zod Schema for name validation
 const nameSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
 });
-
+// zod  schema for address validation
 const addressSchema = z.object({
   street: z.string(),
   city: z.string(),
   country: z.string(),
 });
-
+// Zod schema for order validation
 const orderSchema = z.object({
   productName: z.string(),
   price: z.number(),
   quantity: z.number(),
 });
 
-// Define the Zod schema for the main type
+// Zod schema for the main user validation
 const userValidationSchema = z.object({
   userId: z.number().int(),
   username: z.string(),
   password: z.string(),
   fullName: nameSchema,
   age: z.number(),
-  email: z.string().email(),
+  email: z.string().email({
+    message: 'Invalid email address',
+  }),
   isActive: z.boolean(),
   hobbies: z.array(z.string()),
   address: addressSchema,
-  orders: z.array(orderSchema),
+  orders: z.array(orderSchema).optional(),
 });
+// zod schema for updated full name
 const nameUpdatedSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
 });
-
+// zod schema for updated address info
 const addressUpdatedSchema = z.object({
   street: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),
 });
-
+// zod schema for updated orders info
 const orderUpdatedSchema = z.object({
   productName: z.string().optional(),
   price: z.number().optional(),
   quantity: z.number().optional(),
 });
 
-// Define the Zod schema for the main type
+//  Zod schema for the user updated
 export const userUpdatedValidationSchema = z.object({
   userId: z.number().int().optional(),
   username: z.string().optional(),

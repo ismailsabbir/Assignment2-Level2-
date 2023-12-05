@@ -16,6 +16,7 @@ export type TOrders = {
   price: number;
   quantity: number;
 };
+// User interface
 export type TUser = {
   userId: number;
   username: string;
@@ -26,9 +27,14 @@ export type TUser = {
   isActive: boolean;
   hobbies: string[];
   address: TAddress;
-  orders: TOrders[];
+  orders?: TOrders[];
 };
+// Static method for identifying the user by user-id.
 export interface userstaticmathod extends Model<TUser> {
   isuserExit(id: string): Promise<TUser | null>;
+}
+// Static method for identifying the user by username.
+export interface userNamestaticmathod extends Model<TUser> {
+  isuserNameExit(username: string): Promise<TUser | null>;
 }
 export default TUser;

@@ -4,10 +4,6 @@ import { UserModel } from './user.model';
 // for creating User
 
 const createUserDB = async (user: TUser) => {
-  //   const userid=user?.userId.toString();
-  //   if (await UserModel.isuserExit(userid)) {
-  // throw new Error('already exist')
-  // }
   const result = await UserModel.create(user);
   return result;
 };

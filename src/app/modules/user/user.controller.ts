@@ -4,10 +4,39 @@ import userValidationSchema, {
   userUpdatedValidationSchema,
 } from './user.validation';
 import TUser from './user.interface';
+import { ZodError } from 'zod';
+import { UserModel } from './user.model';
+import httpStatus from 'http-status';
+import handleZodError from '../../../middleware/errors/zodErrorValidation';
+// create user into DB
 const createuser = async (req: Request, res: Response) => {
   try {
     const user = req.body.user;
     const zodParseData = userValidationSchema.parse(user);
+    const userid = user.userId.toString();
+    const username = user.username;
+    // Check whether the user ID was previously present or not
+    if (await UserModel.isuserExit(userid)) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        success: false,
+        message: 'User creation failed',
+        error: {
+          code: httpStatus.BAD_REQUEST,
+          description: 'User ID must Be Unique.',
+        },
+      });
+    }
+    // Check whether the user Name was previously present or not
+    else if (await UserModel.isuserNameExit(username)) {
+      return res.status(httpStatus.BAD_REQUEST).json({
+        success: false,
+        message: 'User creation failed',
+        error: {
+          code: httpStatus.BAD_REQUEST,
+          description: 'The user name Must Be unique.',
+        },
+      });
+    }
     const result = await userservice.createUserDB(zodParseData);
     res.status(200).json({
       sucess: true,
@@ -15,6 +44,21 @@ const createuser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
+    // Check whether the Erro type is ZodError or not. I sent a response for the zod error in the client.
+    if (error instanceof ZodError) {
+      const simplifiedError = handleZodError(error);
+      const statusCode = simplifiedError?.statusCode;
+      const errorSources = simplifiedError?.errorSources;
+      return res.status(statusCode).json({
+        success: false,
+        message: 'User creation failed',
+        error: {
+          code: simplifiedError.statusCode,
+          description: errorSources,
+        },
+      });
+    }
+    // Sent response for other error
     res.status(404).json({
       success: false,
       message: 'User creation failed',
@@ -25,7 +69,7 @@ const createuser = async (req: Request, res: Response) => {
     });
   }
 };
-
+// Get all user information from Db
 const getalluser = async (req: Request, res: Response) => {
   try {
     const result = await userservice.getUserFromDb();
@@ -35,6 +79,7 @@ const getalluser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
+    // In fetching data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'Users fetched failed',
@@ -45,6 +90,7 @@ const getalluser = async (req: Request, res: Response) => {
     });
   }
 };
+// Get a single user from DB by userId
 const getaUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
@@ -55,7 +101,9 @@ const getaUser = async (req: Request, res: Response) => {
         message: 'User fetched successfully!',
         data: result,
       });
-    } else {
+    }
+    // Sent response for user id not found
+    else {
       res.status(404).json({
         success: false,
         message: 'User not found',
@@ -66,6 +114,7 @@ const getaUser = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    // In fetching data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'User not found',
@@ -76,11 +125,12 @@ const getaUser = async (req: Request, res: Response) => {
     });
   }
 };
-
+// Update user information
 const updateaUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
     const user = req.body;
+    // Check  Zod Updeted validations
     const zodParseData = userUpdatedValidationSchema.parse(user);
     const result = await userservice.updateaUserDB(id, zodParseData as TUser);
     if (result) {
@@ -90,7 +140,9 @@ const updateaUser = async (req: Request, res: Response) => {
         message: 'User update successfully!',
         data: updateduser,
       });
-    } else {
+    }
+    // Sent response for user id not found
+    else {
       res.status(404).json({
         success: false,
         message: 'User not found',
@@ -101,6 +153,7 @@ const updateaUser = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    // In updateing data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'User not found',
@@ -111,6 +164,7 @@ const updateaUser = async (req: Request, res: Response) => {
     });
   }
 };
+// Delate User information from DB
 const delateaUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
@@ -121,7 +175,9 @@ const delateaUser = async (req: Request, res: Response) => {
         message: 'User deleted successfully',
         data: null,
       });
-    } else {
+    }
+    // Sent response for user id not found
+    else {
       res.status(404).json({
         success: false,
         message: 'User not found',
@@ -132,6 +188,7 @@ const delateaUser = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    // In deleting data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'User not found',
@@ -142,6 +199,7 @@ const delateaUser = async (req: Request, res: Response) => {
     });
   }
 };
+// Add order information in user data
 const addorder = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
@@ -153,7 +211,9 @@ const addorder = async (req: Request, res: Response) => {
         message: 'Order created successfully!',
         data: null,
       });
-    } else {
+    }
+    // Sent response for user id not found
+    else {
       res.status(404).json({
         success: false,
         message: 'User not found',
@@ -164,6 +224,7 @@ const addorder = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    // In add order data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'User not found',
@@ -174,6 +235,7 @@ const addorder = async (req: Request, res: Response) => {
     });
   }
 };
+// Get only user order information
 const getUserOrder = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
@@ -184,7 +246,9 @@ const getUserOrder = async (req: Request, res: Response) => {
         message: 'Order fetched successfully!',
         data: result,
       });
-    } else {
+    }
+    // Sent response for user id not found
+    else {
       res.status(404).json({
         success: false,
         message: 'User not found',
@@ -195,6 +259,7 @@ const getUserOrder = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    // In fetching data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'User not found',
@@ -205,7 +270,7 @@ const getUserOrder = async (req: Request, res: Response) => {
     });
   }
 };
-
+// Get user orders total amount from DB
 const getUserOrderTotalPrice = async (req: Request, res: Response) => {
   try {
     const id = req.params.userId;
@@ -216,7 +281,9 @@ const getUserOrderTotalPrice = async (req: Request, res: Response) => {
         message: 'Total price calculated successfully!',
         data: result,
       });
-    } else {
+    }
+    // Sent response for user id not found
+    else {
       res.status(404).json({
         success: false,
         message: 'User not found',
@@ -227,6 +294,7 @@ const getUserOrderTotalPrice = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
+    // In fetching data from DB an error response is sent to the client.
     res.status(404).json({
       success: false,
       message: 'User not found',

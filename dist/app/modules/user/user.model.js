@@ -47,14 +47,15 @@ exports.orderschema = new mongoose_1.Schema({
         type: Number,
     },
 });
+// user Schema
 const userschema = new mongoose_1.Schema({
     userId: {
         type: Number,
-        // unique: true,
+        unique: true,
     },
     username: {
         type: String,
-        // unique: true,
+        unique: true,
     },
     password: {
         type: String,
@@ -75,8 +76,10 @@ const userschema = new mongoose_1.Schema({
     },
     orders: {
         type: [exports.orderschema],
+        default: undefined,
     },
 });
+// Password hasing middleware
 userschema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = this;
@@ -84,21 +87,24 @@ userschema.pre('save', function (next) {
         next();
     });
 });
+// Password Hide for client response
 userschema.post('save', function (doco, next) {
     doco.password = '';
     next();
 });
+// user exist or not exist by username
+userschema.statics.isuserNameExit = function (username) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const exituserName = exports.UserModel.findOne({ username: username });
+        return exituserName;
+    });
+};
+// user exist or not exist by userId
 userschema.statics.isuserExit = function (id) {
     return __awaiter(this, void 0, void 0, function* () {
         const exituser = exports.UserModel.findOne({ userId: id });
         return exituser;
     });
 };
-// userschema.pre('save',async function(next){
-//   const isUserIdExist=await UserModel.find({userId:this.userId});
-//   if(isUserIdExist){
-//     throw new Error('Already Exist');
-//   }
-//   next();
-// })
+// User Model
 exports.UserModel = (0, mongoose_1.model)('users', userschema);
