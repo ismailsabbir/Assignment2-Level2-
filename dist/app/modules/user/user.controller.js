@@ -45,7 +45,7 @@ const zodErrorValidation_1 = __importDefault(require("../../../middleware/errors
 // create user into DB
 const createuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = req.body.user;
+        const user = req.body;
         const zodParseData = user_validation_1.default.parse(user);
         const userid = user.userId.toString();
         const username = user.username;
