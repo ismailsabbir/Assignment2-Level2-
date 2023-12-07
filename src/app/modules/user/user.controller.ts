@@ -11,7 +11,7 @@ import handleZodError from '../../../middleware/errors/zodErrorValidation';
 // create user into DB
 const createuser = async (req: Request, res: Response) => {
   try {
-    const user = req.body.user;
+    const user = req.body;
     const zodParseData = userValidationSchema.parse(user);
     const userid = user.userId.toString();
     const username = user.username;
